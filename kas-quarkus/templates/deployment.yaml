@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kas.fullname" . }}
+  labels:
+    {{- include "kas.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "kas.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "kas.selectorLabels" . | nindent 8 }}
+    spec:
+      # Add imagePullSecrets only if defined
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.imagePullSecrets }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
+      serviceAccountName: {{ include "kas.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: AGENT_SERVICE_ACCOUNT
+              value: {{ .Values.serviceAccount.name | default "kas" | quote }}
+            - name: AGENT_SECRET_NAME
+              value: {{ .Values.secret.name | default "kas" | quote }}
+
+            - name: CONNECT_NAMESPACE
+              value: {{ .Values.config.kubernetes.namespace | default "default" | quote }}
+            - name: CONNECT_KUBERNETES_ROLE_NAME
+              value: {{ .Values.serviceAccount.name | default "kas" | quote }}
+            - name: CONNECT_KUBERNETES_ROLE_BINDING_NAME
+              value: {{ .Values.serviceAccount.name | default "kas" }}-role-binding
+
+            - name: LINKIFY_CONNECT_REST_URL
+              value: {{ .Values.config.linkify.connect.rest.url | default "http://connect.linkify-dev.svc.cluster.local:8080" | quote }}
+
+            {{- if .Values.secret.create }}
+              {{- if .Values.secret.agent.token }}
+            - name: AGENT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: agent.token
+              {{- end }}
+            
+              {{- if .Values.secret.websocket.url }}
+            - name: WEBSOCKET_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: websocket.url
+              {{- end }}
+            {{- end }}
+
+          # Liveness Probe
+          {{- if .Values.probe.liveness.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probe.liveness.path }}
+              port: {{ .Values.probe.liveness.port }}
+            initialDelaySeconds: {{ .Values.probe.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probe.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probe.liveness.timeoutSeconds }}
+            successThreshold: {{ .Values.probe.liveness.successThreshold }}
+            failureThreshold: {{ .Values.probe.liveness.failureThreshold }}
+          {{- end }}
+
+          # Readiness Probe
+          {{- if .Values.probe.readiness.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probe.readiness.path }}
+              port: {{ .Values.probe.readiness.port }}
+            initialDelaySeconds: {{ .Values.probe.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probe.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probe.readiness.timeoutSeconds }}
+            successThreshold: {{ .Values.probe.readiness.successThreshold }}
+            failureThreshold: {{ .Values.probe.readiness.failureThreshold }}
+          {{- end }}
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+  
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

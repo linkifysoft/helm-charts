@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  kas:
+  - apiVersion: v2
+    appVersion: 1.12.6
+    created: "2025-02-05T15:56:11.164889+07:00"
+    description: A Helm chart for kas
+    digest: 04557d8cbf68d05ea230132b156291cf63967118ac26c3c5f8b9d0069d7f535d
+    name: kas
+    urls:
+    - https://trinitytechnology.github.io/kas-helm/packages/kas-1.10.0.tgz
+    version: 1.10.0
+generated: "2025-02-05T15:56:11.16225+07:00"

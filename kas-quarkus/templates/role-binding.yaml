@@ -1,0 +1,29 @@
+{{- if .Values.rbac.createRoleBinding }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Values.serviceAccount.name }}-role-binding
+  namespace: {{ .Values.config.kubernetes.namespace }}
+roleRef:
+  kind: Role
+  apiGroup: rbac.authorization.k8s.io
+  name: {{ .Values.serviceAccount.name }}
+subjects:
+  - kind: ServiceAccount
+    apiGroup: ""
+    name: {{ .Values.serviceAccount.name }}
+    namespace: {{ .Values.config.kubernetes.namespace }}
+---
+apiVersion: "rbac.authorization.k8s.io/v1"
+kind: "ClusterRoleBinding"
+metadata:
+  name: {{ .Values.serviceAccount.name }}-cluster-role-binding
+roleRef:
+  kind: "ClusterRole"
+  apiGroup: "rbac.authorization.k8s.io"
+  name: {{ .Values.serviceAccount.name }}
+subjects:
+  - kind: "ServiceAccount"
+    name: {{ .Values.serviceAccount.name }}
+    namespace: {{ .Values.config.kubernetes.namespace }}
+{{- end }}

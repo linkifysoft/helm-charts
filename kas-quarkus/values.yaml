@@ -1,0 +1,92 @@
+replicaCount: 1
+
+image:
+  repository: trinitytechnology/linkifysoft-kas
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "1.20.5"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "kas"
+
+# RBAC Configuration
+rbac:
+  createRole: true  # Enable role creation
+  createRoleBinding: true  # Enable role binding creation
+  
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources:
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 400Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+config:
+  kubernetes:
+    namespace: "linkify-agent"
+  linkify:
+    connect:
+      rest:
+        url: https://dev-connect.linkifysoft.com
+
+secret:
+  create: true
+  name: "kas"
+  agent:
+    token: "e07c6e8099004fbeb966723f821a7461"
+  websocket:
+    url: "wss://dev-ws.linkifysoft.com/connection/websocket"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+probe:
+  liveness:
+    enabled: false
+    path: /q/health/live
+    port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+  readiness:
+    enabled: false
+    path: /q/health/ready
+    port: 8080
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+
