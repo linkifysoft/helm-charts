@@ -3,11 +3,11 @@ entries:
   kas:
   - apiVersion: v2
     appVersion: 1.12.6
-    created: "2025-02-05T15:56:11.164889+07:00"
+    created: "2025-02-13T12:08:16.633126+07:00"
     description: A Helm chart for kas
-    digest: 04557d8cbf68d05ea230132b156291cf63967118ac26c3c5f8b9d0069d7f535d
+    digest: 395e4aee05729f13424b440b0eda2403acafad8a582ed101f7be43e5687f9228
     name: kas
     urls:
-    - https://trinitytechnology.github.io/kas-helm/packages/kas-1.10.0.tgz
+    - https://linkifysoft.github.io/helm-charts/packages/packages/kas-1.10.0.tgz
     version: 1.10.0
-generated: "2025-02-05T15:56:11.16225+07:00"
+generated: "2025-02-13T12:08:16.630459+07:00"
