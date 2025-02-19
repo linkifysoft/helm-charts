@@ -7,5 +7,5 @@ helm package kas-quarkus/ --destination ./packages
 
 2. Create index file to publish
 ``bash
-helm repo index --url https://linkifysoft.github.io/helm-charts/packages/ .
+helm repo index --url https://linkifysoft.github.io/helm-charts/ .
 ```
