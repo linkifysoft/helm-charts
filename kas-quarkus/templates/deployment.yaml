@@ -47,7 +47,7 @@ spec:
               value: {{ .Values.secret.name | default "kas" | quote }}
 
             - name: CONNECT_NAMESPACE
-              value: {{ .Values.config.kubernetes.namespace | default "default" | quote }}
+              value: {{ .Release.Namespace | default "default" | quote }}
             - name: CONNECT_KUBERNETES_ROLE_NAME
               value: {{ .Values.serviceAccount.name | default "kas" | quote }}
             - name: CONNECT_KUBERNETES_ROLE_BINDING_NAME

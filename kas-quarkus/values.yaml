@@ -4,7 +4,7 @@ image:
   repository: trinitytechnology/linkifysoft-kas
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.22.0"
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
@@ -49,12 +49,10 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 config:
-  kubernetes:
-    namespace: "linkify-agent"
   linkify:
     connect:
       rest:
-        url: https://dev-connect.linkifysoft.com
+        url: http://connect.linkify-dev.svc.cluster.local:8080
 
 secret:
   create: true
@@ -62,7 +60,7 @@ secret:
   agent:
     token: "e07c6e8099004fbeb966723f821a7461"
   websocket:
-    url: "wss://dev-ws.linkifysoft.com/connection/websocket"
+    url: "ws://host.docker.internal:8000/connection/websocket"
 
 nodeSelector: {}
 
