@@ -52,11 +52,10 @@ config:
   linkify:
     connect:
       rest:
-        url: http://connect.linkify-dev.svc.cluster.local:8080
+        url: https://dev-connect.linkifysoft.com
 
 secret:
   create: true
-  name: "kas"
   agent:
     token: "e07c6e8099004fbeb966723f821a7461"
   websocket:

@@ -44,7 +44,7 @@ spec:
             - name: AGENT_SERVICE_ACCOUNT
               value: {{ .Values.serviceAccount.name | default "kas" | quote }}
             - name: AGENT_SECRET_NAME
-              value: {{ .Values.secret.name | default "kas" | quote }}
+              value: {{ .Release.Name | default "kas" | quote }}
 
             - name: CONNECT_NAMESPACE
               value: {{ .Release.Namespace | default "default" | quote }}
@@ -61,7 +61,7 @@ spec:
             - name: AGENT_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secret.name }}
+                  name: {{ .Release.Name }}
                   key: agent.token
               {{- end }}
             
@@ -69,7 +69,7 @@ spec:
             - name: WEBSOCKET_URL
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secret.name }}
+                  name: {{ .Release.Name }}
                   key: websocket.url
               {{- end }}
             {{- end }}
