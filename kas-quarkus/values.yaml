@@ -59,7 +59,7 @@ secret:
   agent:
     token: "e07c6e8099004fbeb966723f821a7461"
   websocket:
-    url: "ws://host.docker.internal:8000/connection/websocket"
+    url: "wss://dev-ws.linkifysoft.com/connection/websocket"
 
 nodeSelector: {}
 
